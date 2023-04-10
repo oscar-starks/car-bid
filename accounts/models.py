@@ -14,11 +14,9 @@ GENDER_CHOICES = (
 class User(AbstractBaseUser, PermissionsMixin):
     username = None
     id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
-    first_name = models.CharField(verbose_name=(_("First name")),blank = True, null = True, max_length=300)
-    last_name = models.CharField(verbose_name=(_("Last name")),blank = True, null = True, max_length=300)
-    avatar = models.ImageField(upload_to="avatar/", blank=True)
+    first_name = models.CharField(verbose_name=(_("First name")),max_length=300)
+    last_name = models.CharField(verbose_name=(_("Last name")),max_length=300)
     email = models.EmailField(verbose_name=(_("Email address")), unique=True)
-    phone_number = models.CharField(max_length=45, unique=True, null=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     date_joined = models.DateTimeField(default=timezone.now)
