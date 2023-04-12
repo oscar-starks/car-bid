@@ -23,7 +23,7 @@ class CreateUser(APIView):
         user = User.objects.create_user(**serializer.validated_data)
         user.is_active = False
         user.save()
-
+            
         serializer = UserProfileSerializer(user, many = False, context ={"request":request})
         token = AuthToken.objects.create(user=user)
         return Response({"token":token[1]}|dict(serializer.data))

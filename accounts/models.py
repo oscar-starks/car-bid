@@ -36,8 +36,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     identification = models.FileField(upload_to="identification/")
     dealer = models.BooleanField(default=False)
     seller = models.BooleanField(default=False)
+    approved_seller = models.BooleanField(default=False)
 
-    
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
