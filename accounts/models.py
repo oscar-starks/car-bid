@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 import uuid
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from accounts.custom_functions import generate_token
+from accounts.model_functions import generate_token
 
 GENDER_CHOICES = (
     ("male", "male"),

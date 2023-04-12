@@ -11,7 +11,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-import environ
+import environ, os
+from datetime import timedelta
 
 env = environ.Env()
 environ.Env.read_env()
@@ -42,8 +43,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'knox',
 
-    'accounts.apps.AccountsConfig'
+    'accounts.apps.AccountsConfig',
+    'car_app.apps.CarAppConfig',
 ]
 
 MIDDLEWARE = [
@@ -127,10 +130,18 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.path.join(BASE_DIR,MEDIA_URL)
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_KNOX = {
+    'USER_SERIALIZER':'authentication.serializers.UserSerializer',
+    'TOKEN_TTL':timedelta(hours = 24),
+}
 
 # EMAIL CONFIG
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
