@@ -16,7 +16,7 @@ def remove_identification(sender, instance,*args, **kwargs):
             pass
 
 @receiver(post_save, sender=User)
-def send_activation_email(sender,instance, created):
+def send_activation_email(sender,instance, created,**kwargs):
     if created == True:
         if instance.seller == True:
             Util.account_created(instance)
