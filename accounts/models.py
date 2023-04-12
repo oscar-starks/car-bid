@@ -4,12 +4,19 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 import uuid
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from accounts.custom_functions import generate_token
 
 GENDER_CHOICES = (
     ("male", "male"),
     ("female", "female"),
     
 )
+
+ACCOUNT_TOKEN_CHOICES = (
+    ("activation", "activation"),
+    ("recovery", "recovery"),
+)
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     username = None
@@ -38,3 +45,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return str(self.email)
+
+
+class AccountToken(models.Model):
+    user = models.ForeignKey(User, on_delete =models.CASCADE)
+    token = models.PositiveIntegerField(editable=False, default=generate_token, unique=True)
+    creation_time = models.DateTimeField(auto_now_add=True)
+    purpose = models.CharField(max_length=10, choices=ACCOUNT_TOKEN_CHOICES)

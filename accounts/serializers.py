@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from accounts.models import User, GENDER_CHOICES
+from accounts.models import User, GENDER_CHOICES, AccountToken
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
@@ -12,18 +12,18 @@ class LoginSerializer(serializers.Serializer):
         return attrs
     
 class UserProfileSerializer(serializers.ModelSerializer):
-    avatar = serializers.SerializerMethodField(read_only=True)
-
+    identification_file_url = serializers.SerializerMethodField()
     class Meta:
         model = User
         exclude = ["password"]
 
-    def get_avatar(self, obj):
+    def get_identicaion_file_url(self, obj):
         try:
             request = self.context.get("request")
-            return request.build_absolute_uri(obj.avatar.url)
+            return request.build_absolute_uri(obj.identification.url)
         except:
             return None
+
         
 class UserCreationSerializer(serializers.Serializer):
     email = serializers.EmailField()
@@ -48,4 +48,25 @@ class UserCreationSerializer(serializers.Serializer):
         elif len(attrs["password"]) < 8:
             raise serializers.ValidationError("password is too short!")
 
+        return attrs
+    
+class ForgotPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def validate(self, attrs):
+        email = attrs["email"]
+        if User.objects.filter(email = email).exists() == False:
+            raise serializers.ValidationError(f"User with email {email} does not exist")
+        return attrs
+    
+class NewPasswordSerializer(serializers.Serializer):
+    token = serializers.IntegerField()
+    password = serializers.CharField()
+
+    def validate(self, attrs):
+        token = int(attrs["token"])
+        if AccountToken.objects.filter(token = token, purpose = "recovery").exists() == False:
+            raise serializers.ValidationError(f"token does not exist")
+        elif len(attrs["password"]) < 8:
+            raise serializers.ValidationError("password is too short!")
         return attrs
