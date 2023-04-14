@@ -1,16 +1,15 @@
-from accounts.models import User, AccountToken
+from accounts.models import User
 from django.core.mail import EmailMessage
 from accounts.threads import EmailThread
 from django.utils.translation import gettext_lazy as _
 
 class Util:
     @staticmethod
-    def send_recovery(user:User):
-        token = AccountToken.objects.create(user=user, purpose = "recovery")
+    def send_recovery(user:User, password:str):
         subject = _("Recover your account")
         
         user_name = user.first_name.capitalize() + " " + user.last_name.capitalize()
-        message = _(f"Dear {user_name}, \n Here is your one time recovery token: {token.token}")
+        message = _(f"Dear {user_name}, \nYou have successfully changed password with CartoBid, your temporary password is {password}. You have to change this temporary password after you login successfully. \nNote: This is a system generated mail; please do not reply to this e-mail Id.")
         email_message = EmailMessage(subject=subject, body=message, to=[user.email])
         EmailThread(email_message).start()
 

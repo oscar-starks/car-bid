@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from accounts.models import User, GENDER_CHOICES, AccountToken
+from accounts.models import User, GENDER_CHOICES
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
@@ -12,19 +12,10 @@ class LoginSerializer(serializers.Serializer):
         return attrs
     
 class UserProfileSerializer(serializers.ModelSerializer):
-    # identification_file_url = serializers.SerializerMethodField()
     class Meta:
         model = User
         exclude = ["password"]
-
-    # def get_identification_file_url(self, obj):
-    #     try:
-    #         request = self.context.get("request")
-    #         return request.build_absolute_uri(obj.identification.url)
-    #     except:
-    #         return None
-
-        
+     
 class UserCreationSerializer(serializers.Serializer):
     email = serializers.EmailField()
     first_name = serializers.CharField()
@@ -55,38 +46,3 @@ class ForgotPasswordSerializer(serializers.Serializer):
             raise serializers.ValidationError(f"User with email {email} does not exist")
         return attrs
 
-class ConfirmRecoveryToken(serializers.Serializer):
-    email = serializers.EmailField()
-    token  = serializers.CharField()
-
-    def validate(self, attrs):
-        token = int(attrs["token"])
-        email = attrs["email"]
-
-        try:
-            user = User.objects.get(email = email)
-            AccountToken.objects.get(user = user,token = token, purpose = "recovery")
-        except:
-            raise serializers.ValidationError(f"token does not exist")
-        return attrs
-
-
-class NewPasswordSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    token = serializers.IntegerField()
-    password = serializers.CharField()
-
-    def validate(self, attrs):
-        token = int(attrs["token"])
-        email = attrs["email"]
-
-        try:
-            user = User.objects.get(email = email)
-            AccountToken.objects.get(user = user,token = token, purpose = "recovery")
-
-        except:
-            raise serializers.ValidationError(f"token does not exist")
-
-        if len(attrs["password"]) < 8:
-            raise serializers.ValidationError("password is too short!")
-        return attrs

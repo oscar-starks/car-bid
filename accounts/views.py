@@ -1,9 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
-from accounts.serializers import LoginSerializer, UserCreationSerializer, UserProfileSerializer, ForgotPasswordSerializer, NewPasswordSerializer,ConfirmRecoveryToken
+from accounts.serializers import LoginSerializer, UserCreationSerializer, UserProfileSerializer, ForgotPasswordSerializer
 from accounts.custom_functions import authenticate_user
-from accounts.models import User, AccountToken
+from accounts.models import User
 from accounts.email import Util
 from knox.auth import AuthToken, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -52,37 +52,14 @@ class ForgotPassword(APIView):
         serializer = self.serializer_class(data = request.data)
         serializer.is_valid(raise_exception=True)
         
+        password = generate_random_string()
         user = User.objects.get(email = serializer.data["email"])
-        Util.send_recovery(user=user)
+        user.set_password(password)
+        user.save()
+
+        Util.send_recovery(user=user, password=password)
         return Response(status=status.HTTP_201_CREATED)
 
-class CheckTokenView(APIView):
-    serializer_class = ConfirmRecoveryToken
-
-    def post(self, request):
-        serializer = self.serializer_class(data = request.data)
-        if serializer.is_valid() == False:
-            return Response({"valid":False}, status=status.HTTP_200_OK)
-        
-        return Response({"valid":True}, status=status.HTTP_200_OK)
-
-class NewPasswordView(APIView):
-    serializer_class = [NewPasswordSerializer,UserProfileSerializer]
-    def post(self, request):
-        serializer = self.serializer_class[0](data = request.data)
-        serializer.is_valid(raise_exception=True)
-
-        token = serializer.data["token"]
-        token = AccountToken.objects.get(token=token, purpose = "recovery")
-        user = token.user
-        user.set_password(serializer.data["password"])
-        user.save()
-        del token
-
-        serializer = self.serializer_class[1](user, many = False, context = {"request":request})
-        token = AuthToken.objects.create(user=user)
-        return Response({"token":token[1]}|dict(serializer.data))
-    
 class ChangePasswordView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
