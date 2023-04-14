@@ -12,17 +12,17 @@ class LoginSerializer(serializers.Serializer):
         return attrs
     
 class UserProfileSerializer(serializers.ModelSerializer):
-    identification_file_url = serializers.SerializerMethodField()
+    # identification_file_url = serializers.SerializerMethodField()
     class Meta:
         model = User
         exclude = ["password"]
 
-    def get_identicaion_file_url(self, obj):
-        try:
-            request = self.context.get("request")
-            return request.build_absolute_uri(obj.identification.url)
-        except:
-            return None
+    # def get_identification_file_url(self, obj):
+    #     try:
+    #         request = self.context.get("request")
+    #         return request.build_absolute_uri(obj.identification.url)
+    #     except:
+    #         return None
 
         
 class UserCreationSerializer(serializers.Serializer):
@@ -30,7 +30,6 @@ class UserCreationSerializer(serializers.Serializer):
     first_name = serializers.CharField()
     last_name = serializers.CharField()
     gender = serializers.ChoiceField(choices = GENDER_CHOICES)
-    password = serializers.CharField()
     address = serializers.CharField()
     vat_no = serializers.CharField()
     hrb_no = serializers.CharField()
@@ -45,9 +44,6 @@ class UserCreationSerializer(serializers.Serializer):
         if User.objects.filter(email = attrs["email"]).exists():
             raise serializers.ValidationError("A user with that email already exists!")
         
-        elif len(attrs["password"]) < 8:
-            raise serializers.ValidationError("password is too short!")
-
         return attrs
     
 class ForgotPasswordSerializer(serializers.Serializer):

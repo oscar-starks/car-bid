@@ -7,8 +7,10 @@ from accounts.models import User, AccountToken
 from accounts.email import Util
 from knox.auth import AuthToken, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from accounts.custom_functions import generate_random_string
 
-class APILoginView(APIView):
+
+class LoginView(APIView):
     serializer_class = LoginSerializer
     def post(self, request):
         serializer = self.serializer_class(data = request.data)
@@ -20,13 +22,11 @@ class CreateUser(APIView):
     def post(self, request):
         serializer = self.serializer_class(data = request.data)
         serializer.is_valid(raise_exception=True)
-        user = User.objects.create_user(**serializer.validated_data)
-        user.is_active = False
+        password = generate_random_string()
+        user = User.objects.create_user(**serializer.validated_data|{'password':password})
         user.save()
-            
-        serializer = UserProfileSerializer(user, many = False, context ={"request":request})
-        token = AuthToken.objects.create(user=user)
-        return Response({"token":token[1]}|dict(serializer.data))
+        Util.send_password(user = user, password = password)
+        return Response({'success': True}, status=status.HTTP_200_OK)
     
 class UserProfile(APIView):
     authentication_classes = [TokenAuthentication]

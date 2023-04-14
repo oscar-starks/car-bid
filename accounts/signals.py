@@ -15,20 +15,22 @@ def remove_identification(sender, instance,*args, **kwargs):
         except:
             pass
 
-@receiver(post_save, sender=User)
-def send_activation_email(sender,instance, created,**kwargs):
-    if created == True:
-        if instance.seller == True:
-            Util.account_created(instance)
+# @receiver(post_save, sender=User)
+# def send_activation_email(sender,instance, created,**kwargs):
+#     if created == True:
+#         if instance.seller == True:
+#             Util.account_created(instance)
 
 @receiver(pre_save, sender=User)
 def send_confirmation_email(sender,instance, **kwargs):
     user = instance
-    pre_user = User.objects.get(id = user.id)
+    try:
+        pre_user = User.objects.get(id = user.id)
 
-    if pre_user.approved_seller != user.approved_seller and user.approved_seller == True:
-        Util.seller_approved(user = user)
-
+        if pre_user.approved_seller != user.approved_seller and user.approved_seller == True:
+            Util.seller_approved(user = user)
+    except:
+        pass
 
 
 
