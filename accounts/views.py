@@ -82,6 +82,22 @@ class NewPasswordView(APIView):
         serializer = self.serializer_class[1](user, many = False, context = {"request":request})
         token = AuthToken.objects.create(user=user)
         return Response({"token":token[1]}|dict(serializer.data))
+    
+class ChangePasswordView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
-    
-    
+    def post(self, request):
+        user = request.user
+        password = request.data.get("password")
+
+        if password != None:
+            if len(password) < 8:
+                return Response({"message": "Password is too short"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            user.set_password(password)
+            user.save()
+            return Response({"message": "Password changed"}, status=status.HTTP_200_OK)
+            
+        else:
+            return Response({"message": "Password not provided"}, status=status.HTTP_400_BAD_REQUEST)
