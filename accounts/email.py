@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 class Util:
     @staticmethod
     def send_recovery(user:User):
-        token, created = AccountToken.objects.get_or_create(user=user, purpose = "recovery")
+        token = AccountToken.objects.create(user=user, purpose = "recovery")
         subject = _("Recover your account")
         
         user_name = user.first_name.capitalize() + " " + user.last_name.capitalize()

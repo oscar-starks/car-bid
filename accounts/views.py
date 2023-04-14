@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
-from accounts.serializers import LoginSerializer, UserCreationSerializer, UserProfileSerializer, ForgotPasswordSerializer, NewPasswordSerializer
+from accounts.serializers import LoginSerializer, UserCreationSerializer, UserProfileSerializer, ForgotPasswordSerializer, NewPasswordSerializer,ConfirmRecoveryToken
 from accounts.custom_functions import authenticate_user
 from accounts.models import User, AccountToken
 from accounts.email import Util
@@ -56,6 +56,16 @@ class ForgotPassword(APIView):
         Util.send_recovery(user=user)
         return Response(status=status.HTTP_201_CREATED)
 
+class CheckTokenView(APIView):
+    serializer_class = ConfirmRecoveryToken
+
+    def post(self, request):
+        serializer = self.serializer_class(data = request.data)
+        if serializer.is_valid() == False:
+            return Response({"valid":False}, status=status.HTTP_200_OK)
+        
+        return Response({"valid":True}, status=status.HTTP_200_OK)
+
 class NewPasswordView(APIView):
     serializer_class = [NewPasswordSerializer,UserProfileSerializer]
     def post(self, request):
@@ -74,15 +84,4 @@ class NewPasswordView(APIView):
         return Response({"token":token[1]}|dict(serializer.data))
 
     
-    # def put(self, request):
-    #     user = request.user
-
-    #     serializer = self.serializer_class[1](data=request.data)
-    #     serializer.is_valid(raise_exception=True)
-
-    #     for data in serializer.data:
-    #         setattr(user, data, request.data[data])
-    #     user.save()
-
-    #     serializer  = self.serializer_class[0](user)
-    #     return Response(serializer.data)
+    

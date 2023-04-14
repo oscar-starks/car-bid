@@ -54,15 +54,39 @@ class ForgotPasswordSerializer(serializers.Serializer):
         if User.objects.filter(email = email).exists() == False:
             raise serializers.ValidationError(f"User with email {email} does not exist")
         return attrs
-    
+
+class ConfirmRecoveryToken(serializers.Serializer):
+    email = serializers.EmailField()
+    token  = serializers.CharField()
+
+    def validate(self, attrs):
+        token = int(attrs["token"])
+        email = attrs["email"]
+
+        try:
+            user = User.objects.get(email = email)
+            AccountToken.objects.get(user = user,token = token, purpose = "recovery")
+        except:
+            raise serializers.ValidationError(f"token does not exist")
+        return attrs
+
+
 class NewPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
     token = serializers.IntegerField()
     password = serializers.CharField()
 
     def validate(self, attrs):
         token = int(attrs["token"])
-        if AccountToken.objects.filter(token = token, purpose = "recovery").exists() == False:
+        email = attrs["email"]
+
+        try:
+            user = User.objects.get(email = email)
+            AccountToken.objects.get(user = user,token = token, purpose = "recovery")
+
+        except:
             raise serializers.ValidationError(f"token does not exist")
-        elif len(attrs["password"]) < 8:
+
+        if len(attrs["password"]) < 8:
             raise serializers.ValidationError("password is too short!")
         return attrs
