@@ -1,6 +1,6 @@
 from rest_framework import permissions
 
-class IsInstructor(permissions.IsAuthenticated):
+class IsSeller(permissions.IsAuthenticated):
     message = "this user is not an approved seller"
 
     def has_permission(self, request, view):

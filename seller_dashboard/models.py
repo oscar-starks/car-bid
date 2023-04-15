@@ -13,11 +13,13 @@ class Car(models.Model):
     km = models.PositiveIntegerField()
     first_registration_date = models.DateField()
     power = models.CharField(max_length=1000)
-    images = models.ManyToManyField(CarImage)
+    price = models.PositiveIntegerField()
+    images = models.ManyToManyField(CarImage, blank= True)
     paid = models.BooleanField(default=False)
     sold = models.BooleanField(default=False)
     picked_up = models.BooleanField(default=False)
     draft = models.BooleanField(default=True)
+    time_of_advert = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.model
