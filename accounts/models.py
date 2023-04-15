@@ -37,6 +37,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     dealer = models.BooleanField(default=False)
     seller = models.BooleanField(default=False)
     approved_seller = models.BooleanField(default=False)
+    country = models.CharField(max_length=10, default = "GERMANY")
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []

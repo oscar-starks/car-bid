@@ -30,8 +30,8 @@ class UserCreationSerializer(serializers.Serializer):
     dealer = serializers.BooleanField(default=True)
     seller = serializers.BooleanField(default=False)
 
-
     def validate(self, attrs):
+        country = str(attrs["country"])
         if User.objects.filter(email = attrs["email"]).exists():
             raise serializers.ValidationError("A user with that email already exists!")
         

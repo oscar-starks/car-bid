@@ -47,6 +47,7 @@ INSTALLED_APPS = [
 
     'accounts.apps.AccountsConfig',
     'car_app.apps.CarAppConfig',
+    'seller_dashboard.apps.SellerDashboardConfig'
 ]
 
 MIDDLEWARE = [
