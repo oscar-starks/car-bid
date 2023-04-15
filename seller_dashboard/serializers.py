@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from seller_dashboard.models import Car, CarImage
 
-class CarImageSerializer(serializers.ModelFieldSerializer):
+class CarImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = CarImage
         fields = "__all__"

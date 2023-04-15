@@ -1,3 +1,4 @@
 from django.contrib import admin
+from seller_dashboard.models import Car, CarImage
 
-# Register your models here.
+admin.site.register([Car, CarImage])
