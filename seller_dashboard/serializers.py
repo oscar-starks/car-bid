@@ -7,7 +7,8 @@ class CarImageSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def create(self, validated_data):
-        car_image = CarImage.objects.create(**validated_data)
+        image = validated_data["image"]
+        car_image = CarImage.objects.create(image = image)
         return car_image
 
 class CarSerializer(serializers.ModelSerializer):

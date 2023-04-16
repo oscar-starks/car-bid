@@ -86,24 +86,24 @@ class AddImage(APIView):
     model = Car
 
     def post(self, request, car_id):
-        # try:
+        try:
             car = self.model.objects.get(id=car_id, owner = request.user)
             serializer = self.serializer_class[0](data = request.data)
             serializer.is_valid(raise_exception=True)
-            print(serializer.data)
-            car_image = serializer.create(validated_data = serializer.data)
+            car_image = serializer.create(request.data)
             car.images.add(car_image)
-            serializer = self.serializer_class[1](car)
+            serializer = self.serializer_class[1](car, context = {"request": request})  
             return Response(serializer.data)
-        # except:
-        #     return Response(status=status.HTTP_400_BAD_REQUEST)
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         
     def delete(self, request, car_id):
         try:
             image_id = request.data["image_id"]
             car = self.model.objects.get(id=car_id, owner = request.user)
-            car.images.delete(id = image_id)
-            return Response(status=status.HTTP_200_OK)
+            car.images.get(id = image_id).delete()
+            serializer = self.serializer_class[1](car, context = {"request": request})  
+            return Response(serializer.data)
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
