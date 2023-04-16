@@ -9,7 +9,7 @@ from seller_dashboard.permissions import IsSeller
 from django.utils import timezone
 
 class MyCars(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSeller]
     authentication_classes = [TokenAuthentication]
     serializer_class = CarSerializer
     model = Car
@@ -20,7 +20,7 @@ class MyCars(APIView):
         return Response(serializer.data)
 
 class CarDetailView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSeller]
     authentication_classes = [TokenAuthentication]
     serializer_class = [UpdateCarSerializer, CarSerializer]
     model = Car
@@ -53,16 +53,17 @@ class CarDetailView(APIView):
             serializer.is_valid(raise_exception=True)
             car.__dict__.update(serializer.data)
             car.save()
+            serializer = self.serializer_class[1](car)
+            return Response(serializer.data)
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
     
     def delete(self, request, car_id):
         try:
-            self.model.objects.delete(id=car_id, owner = request.user, draft  = True)
+            self.model.objects.get(id=car_id, owner = request.user, draft  = True).delete()
             return Response(status=status.HTTP_200_OK)
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)   
-
 
 class AddCar(APIView):
     permission_classes = [IsSeller]
@@ -78,7 +79,6 @@ class AddCar(APIView):
         serializer = self.serializer_class[1](car)
         return Response(serializer.data)
 
-
 class AddImage(APIView):
     permission_classes = [IsSeller]
     authentication_classes = [TokenAuthentication]
@@ -86,14 +86,17 @@ class AddImage(APIView):
     model = Car
 
     def post(self, request, car_id):
-        try:
+        # try:
             car = self.model.objects.get(id=car_id, owner = request.user)
-            car_image = self.serializer_class[0](request.data)
+            serializer = self.serializer_class[0](data = request.data)
+            serializer.is_valid(raise_exception=True)
+            print(serializer.data)
+            car_image = serializer.create(validated_data = serializer.data)
             car.images.add(car_image)
             serializer = self.serializer_class[1](car)
             return Response(serializer.data)
-        except:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        # except:
+        #     return Response(status=status.HTTP_400_BAD_REQUEST)
         
     def delete(self, request, car_id):
         try:

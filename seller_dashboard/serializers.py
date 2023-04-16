@@ -11,7 +11,7 @@ class CarImageSerializer(serializers.ModelSerializer):
         return car_image
 
 class CarSerializer(serializers.ModelSerializer):
-    image = CarImageSerializer(many = True)
+    images = CarImageSerializer(many = True)
     class Meta:
         model = Car
         exclude = ["owner",]
