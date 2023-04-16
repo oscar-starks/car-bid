@@ -47,7 +47,8 @@ INSTALLED_APPS = [
 
     'accounts.apps.AccountsConfig',
     'car_app.apps.CarAppConfig',
-    'seller_dashboard.apps.SellerDashboardConfig'
+    'seller_dashboard.apps.SellerDashboardConfig',
+    'bidding.apps.BiddingConfig',
 ]
 
 MIDDLEWARE = [
