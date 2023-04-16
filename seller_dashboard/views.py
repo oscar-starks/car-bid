@@ -30,7 +30,7 @@ class CarDetailView(APIView):
             car = self.model.objects.get(id=car_id, owner = request.user)
             serializer = self.serializer_class[1](car)
             return Response(serializer.data)
-        except self.model.DoesNotExist:
+        except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         
     def post(self, request, car_id):
@@ -79,7 +79,7 @@ class AddCar(APIView):
         serializer = self.serializer_class[1](car)
         return Response(serializer.data)
 
-class AddImage(APIView):
+class EditImage(APIView):
     permission_classes = [IsSeller]
     authentication_classes = [TokenAuthentication]
     serializer_class = [CarImageSerializer, CarSerializer]
@@ -110,7 +110,6 @@ class AddImage(APIView):
 class Advertise(APIView):
     permission_classes = [IsSeller]
     authentication_classes = [TokenAuthentication]
-    serializer_class =  CarSerializer
     model = Car
 
     def get(self, request, car_id):
