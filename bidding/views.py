@@ -15,7 +15,7 @@ class AuctionView(APIView):
 
     def get(self, request):
         time_of_advert = timezone.now() - datetime.timedelta(hours=72)
-        cars = self.model.objects.filter(time_of_advert=time_of_advert)
+        cars = self.model.objects.filter(time_of_advert__lte=time_of_advert).order_by('time_of_advert')[:200]
         serializer = self.serializer_class(cars, many = True, context = {"request": request})
         return Response(serializer.data)
 

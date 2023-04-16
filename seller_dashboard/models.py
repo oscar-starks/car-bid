@@ -20,6 +20,9 @@ class Car(models.Model):
     picked_up = models.BooleanField(default=False)
     draft = models.BooleanField(default=True)
     time_of_advert = models.DateTimeField(blank=True, null=True)
+    auctioned = models.BooleanField(default=False)
 
     def __str__(self):
         return self.model
+    
+   
