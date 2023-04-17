@@ -17,6 +17,7 @@ class CarSerializer(serializers.ModelSerializer):
         model = Car
         exclude = ["owner",]
 
+
 class AddCarSerializer(serializers.Serializer):
     model = serializers.CharField()
     price = serializers.IntegerField()
