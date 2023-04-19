@@ -43,7 +43,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'knox',
+    'celery',
 
     'accounts.apps.AccountsConfig',
     'car_app.apps.CarAppConfig',
@@ -154,3 +156,16 @@ EMAIL_USE_SSL = True
 EMAIL_PORT = env("EMAIL_PORT")
 EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+
+# set the celery broker url
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+  
+# set the celery result backend
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+  
+CELERY_BEAT_SCHEDULE = {
+    'Task_one_schedule':{
+    'task':'bidding.tasks.bids',
+    'schedule': 10
+    }
+}
