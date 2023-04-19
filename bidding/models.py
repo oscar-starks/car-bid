@@ -4,11 +4,12 @@ from django.utils import timezone
 import datetime
 
 class Auction(models.Model):
-    start_time = models.DateTimeField(auto_now_add=True)
+    start = models.DateTimeField(default=timezone.now)
     cars = models.ManyToManyField(Car, blank= True)
+    ended = models.BooleanField(default=False)
 
     class Meta:
-        ordering = ["start_time"]
+        ordering = ["start"]
 
     @property
     def time_elapsed(self) -> bool:
