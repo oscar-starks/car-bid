@@ -23,21 +23,6 @@ class AuctionView(APIView):
         else:
             return Response({"message": "no auctions available"})
 
-        
-        # start_time = timezone.now() - datetime.timedelta(hours=2)
-
-        # if (Auction.objects.filter(start_time__gte = start_time).exists() == True
-        #     and self.model.objects.filter(time_of_advert__lte=time_of_advert, draft=False).exists() == False):
-
-
-
-
-
-
-        # cars = self.model.objects.filter(time_of_advert__lte=time_of_advert).order_by('time_of_advert')[:200]
-        # serializer = self.serializer_class(cars, many = True, context = {"request": request})
-        # return Response(serializer.data)
-
 class CarDetailView(APIView):
     serializer_class = CarSerializer
     model = Car
