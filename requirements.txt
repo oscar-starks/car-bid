@@ -42,4 +42,5 @@ txaio==23.1.1
 typing_extensions==4.5.0
 vine==5.0.0
 wcwidth==0.2.6
+websockets==11.0.2
 zope.interface==6.0

@@ -1,9 +1,8 @@
-import json
-from channels.generic.websocket import AsyncWebsocketConsumer
+import json, asyncio, websockets
 
-class SampleConsumer(AsyncWebsocketConsumer):
-    async def talk_to_worker(self, url, message):
-        async with websockets.connect(url) as worker_ws:
-            await worker_ws.send(json.dumps(message))
-            result = json.loads(await worker_ws.recv())
-        await self.send(text_data=json.dumps({ 'to': 'Client' })
+async def send_message():
+    uri = "ws://localhost:8000/ws/socket-server/"
+    async with websockets.connect(uri) as websocket:
+        await websocket.send(json.dumps({"type":"chat","message":"hello suckersss"}))
+
+asyncio.run(send_message())
