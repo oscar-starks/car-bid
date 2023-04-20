@@ -11,7 +11,6 @@ bid_setting = BidSetting.objects.all().first()
 def bids():
     
     if timezone.now().time() >= bid_setting.start_time or timezone.now().time() <= bid_setting.end_time:
-        Auction.objects.create()
         time_of_advert = timezone.now() - datetime.timedelta(hours=72)
         start_time = timezone.now() - datetime.timedelta(hours=2)
 

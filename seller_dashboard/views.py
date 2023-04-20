@@ -1,5 +1,4 @@
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
 from seller_dashboard.serializers import CarSerializer, CarStatusUpdateSerializer,AddCarSerializer, UpdateCarSerializer,CarImageSerializer
 from seller_dashboard.models import Car
 from rest_framework.views import APIView
@@ -7,6 +6,8 @@ from rest_framework import status
 from knox.auth import TokenAuthentication
 from seller_dashboard.permissions import IsSeller
 from django.utils import timezone
+from django.shortcuts import get_object_or_404
+
 
 class MyCars(APIView):
     permission_classes = [IsSeller]
@@ -126,4 +127,19 @@ class Advertise(APIView):
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         
+class ReAdvertise(APIView):
+    authentication_classes  = [TokenAuthentication]
+    permission_classes = [IsSeller]
+    serializer_class = CarSerializer
+
+    def get(self, request, car_id):
+        car = get_object_or_404(Car, id=car_id, owner=request.user)
+        car.auctioned = False
+        car.save()
+        serializer = self.serializer_class(car)
+        return Response(serializer.data)
+
+
+
+
 

@@ -1,5 +1,5 @@
 from django.urls import path
-from seller_dashboard.views import MyCars, CarDetailView, AddCar, EditImage, Advertise
+from seller_dashboard.views import MyCars, CarDetailView, AddCar, EditImage, Advertise, ReAdvertise
 
 urlpatterns = [
     path('', MyCars.as_view()),
@@ -7,5 +7,6 @@ urlpatterns = [
     path('add_car/',AddCar.as_view()),
     path('add_image/<str:car_id>/', EditImage.as_view()),
     path('advertise/<str:car_id>/', Advertise.as_view()),
+    path('re_advertise/<str:car_id>/', ReAdvertise.as_view())
 
 ]
