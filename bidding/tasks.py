@@ -46,7 +46,8 @@ def bids():
 
             asyncio.run(send_message("A new auction has been started"))
 
-        elif timezone.now().time() <= bid_setting.start_time or timezone.now().time() >= bid_setting.end_time:
+    if timezone.now().time() <= bid_setting.start_time or timezone.now().time() >= bid_setting.end_time:
+        if last_auction.ended == False:
             last_auction.ended =True
             last_auction.save()
             asyncio.run(send_message("The current auction has ended"))
