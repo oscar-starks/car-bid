@@ -2,6 +2,10 @@ from django.db import models
 from accounts.models import User
 import uuid
 
+class BidOffer(models.Model):
+    dealer = models.ForeignKey(User, on_delete=models.CASCADE)
+    offer = models.PositiveIntegerField()
+
 class CarImage(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     image = models.ImageField(upload_to = "car_image/")
@@ -22,6 +26,7 @@ class Car(models.Model):
     draft = models.BooleanField(default=True)
     time_of_advert = models.DateTimeField(blank=True, null=True)
     auctioned = models.BooleanField(default=False)
+    offers = models.ManyToManyField(BidOffer, blank=True)
 
     def __str__(self):
         return self.model

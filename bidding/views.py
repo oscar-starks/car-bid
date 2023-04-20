@@ -4,9 +4,10 @@ from seller_dashboard.models import Car
 from rest_framework.views import APIView
 from rest_framework import status
 from knox.auth import TokenAuthentication
-from bidding.serializers import AuctionSerializer
+from bidding.serializers import AuctionSerializer, OfferSerializer, BidOfferSerializer
 from seller_dashboard.serializers import CarSerializer
-from bidding.models import Auction, BidOffer
+from seller_dashboard.models import BidOffer
+from bidding.models import Auction
 from django.shortcuts import get_object_or_404
 from bidding.permissions import IsDealer
 
@@ -45,6 +46,15 @@ class CarDetailView(APIView):
 class BidOfferView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsDealer]
+    model = Car
+    serializer_class = OfferSerializer
 
     def post(self, request, car_id):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        offer = serializer.data["offer"]
         car = get_object_or_404(self.model, id = car_id)
+        bid_offer = BidOffer.objects.create(car = car, dealer = request.user, offer = offer)
+
+        serializer = BidOfferSerializer(bid_offer)
+        return Response(serializer.data)
