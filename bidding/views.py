@@ -7,8 +7,6 @@ from knox.auth import TokenAuthentication
 from bidding.serializers import AuctionSerializer
 from seller_dashboard.serializers import CarSerializer
 from bidding.models import Auction
-from django.utils import timezone
-import datetime
 
 class AuctionView(APIView):
     serializer_class = CarSerializer
@@ -22,6 +20,14 @@ class AuctionView(APIView):
             return Response(serializer.data)
         else:
             return Response({"message": "no auctions available"})
+        
+class AllCars(APIView):
+    serializer_class = CarSerializer
+
+    def get(self, request):
+        cars = Car.objects.filter(draft = False, auctioned = False)
+        serializer = self.serializer_class(cars, many = True)
+        return Response(serializer.data)
 
 class CarDetailView(APIView):
     serializer_class = CarSerializer

@@ -37,6 +37,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,6 +47,7 @@ INSTALLED_APPS = [
 
     'knox',
     'celery',
+    'channels',
 
     'accounts.apps.AccountsConfig',
     'car_app.apps.CarAppConfig',
@@ -67,6 +69,7 @@ AUTH_USER_MODEL = "accounts.User"
 
 
 ROOT_URLCONF = 'car_bid.urls'
+ASGI_APPLICATION = 'car_bid.asgi.application'
 
 TEMPLATES = [
     {
