@@ -139,7 +139,15 @@ class ReAdvertise(APIView):
         serializer = self.serializer_class(car)
         return Response(serializer.data)
 
+# class DeactivateCar(APIView):
+#     authentication_classes = [TokenAuthentication]
+#     permission_classes =    [IsSeller]
+#     serializer_class = CarSerializer
 
-
+#     def get(self, request, car_id):
+#         car = get_object_or_404(Car, id=car_id, owner=request.user)
+        
+#         serializer = self.serializer_class(car)
+#         return Response(serializer.data)
 
 

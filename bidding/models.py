@@ -1,5 +1,6 @@
 from django.db import models
 from seller_dashboard.models import Car
+from accounts.models import User
 from django.utils import timezone
 import datetime
 
@@ -21,3 +22,8 @@ class Notification(models.Model):
 
     class Meta:
         ordering = ["-date"]
+
+class BidOffer(models.Model):
+    dealer = models.ForeignKey(User, on_delete=models.CASCADE)
+    car = models.ForeignKey(Car, on_delete=models.CASCADE)
+    offer = models.PositiveIntegerField()

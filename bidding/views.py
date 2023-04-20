@@ -6,7 +6,9 @@ from rest_framework import status
 from knox.auth import TokenAuthentication
 from bidding.serializers import AuctionSerializer
 from seller_dashboard.serializers import CarSerializer
-from bidding.models import Auction
+from bidding.models import Auction, BidOffer
+from django.shortcuts import get_object_or_404
+from bidding.permissions import IsDealer
 
 class AuctionView(APIView):
     serializer_class = CarSerializer
@@ -36,9 +38,13 @@ class CarDetailView(APIView):
     model = Car
 
     def get(self, request,car_id):
-        try:
-            car = self.model.objects.get(id=car_id)
-            serializer = self.serializer_class[1](car)
-            return Response(serializer.data)
-        except:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        car = get_object_or_404(self.model, id = car_id)
+        serializer = self.serializer_class[1](car)
+        return Response(serializer.data)
+       
+class BidOfferView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsDealer]
+
+    def post(self, request, car_id):
+        car = get_object_or_404(self.model, id = car_id)
