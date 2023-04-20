@@ -1,8 +1,7 @@
 import json, asyncio, websockets
 
-async def send_message():
-    uri = "ws://localhost:8000/socketserver/"
+async def send_message(notification:str):
+    uri = "ws://localhost:8000/general_notifications/"
     async with websockets.connect(uri) as websocket:
-        await websocket.send(json.dumps({"message":"the message works"}))
+        await websocket.send(json.dumps({"message": notification}))
 
-asyncio.run(send_message())

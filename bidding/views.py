@@ -30,6 +30,8 @@ class AllCars(APIView):
         return Response(serializer.data)
 
 class CarDetailView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes  = [IsAuthenticated]
     serializer_class = CarSerializer
     model = Car
 

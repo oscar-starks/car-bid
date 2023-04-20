@@ -3,7 +3,8 @@ from bidding.models import Auction
 from seller_dashboard.models import Car
 from bidding.models import BidSetting
 from django.utils import timezone
-import datetime
+from bidding.sending_notification import send_message
+import datetime, asyncio
   
 bid_setting = BidSetting.objects.all().first()
 
@@ -21,6 +22,8 @@ def bids():
 
                 last_auction.ended =True
                 last_auction.save()
+                asyncio.run(send_message("The current auction has ended"))
+
 
                 cars = Car.objects.filter(time_of_advert__lte=time_of_advert, draft=False, auctioned = False)[:200]
                 auction = Auction.objects.create(start = timezone.now())
@@ -30,6 +33,8 @@ def bids():
                     car.auctioned = True
                     car.save()
 
+                asyncio.run(send_message("A new auction has been started"))
+
         elif Auction.objects.exists() == False and Car.objects.filter(time_of_advert__lte=time_of_advert, draft=False).exists() == True:
             cars = Car.objects.filter(time_of_advert__lte=time_of_advert, draft=False)[:200]
             auction = Auction.objects.create(start = timezone.now())
@@ -38,6 +43,15 @@ def bids():
             for car in auction.cars.all():
                 car.auctioned = True
                 car.save()
+
+            asyncio.run(send_message("A new auction has been started"))
+
+        elif timezone.now().time() <= bid_setting.start_time or timezone.now().time() >= bid_setting.end_time:
+            last_auction.ended =True
+            last_auction.save()
+            asyncio.run(send_message("The current auction has ended"))
+
+            
 
 
     

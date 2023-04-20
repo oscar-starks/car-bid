@@ -11,15 +11,13 @@ class Auction(models.Model):
     class Meta:
         ordering = ["start"]
 
-    # @property
-    # def time_elapsed(self) -> bool:
-    #     duration_time = timezone.now() - datetime.timedelta(hours=2)
-    #     if self.start_time > duration_time:
-    #         return True
-    #     else:
-    #         return False
-
 class BidSetting(models.Model):
     start_time = models.TimeField(default = datetime.time(hour=9,minute=0))
     end_time = models.TimeField(default = datetime.time(hour = 16, minute = 0))
 
+class Notification(models.Model):
+    date = models.DateTimeField(default = timezone.now)
+    message = models.CharField(max_length = 1000)
+
+    class Meta:
+        ordering = ["-date"]

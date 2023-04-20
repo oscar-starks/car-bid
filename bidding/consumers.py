@@ -3,8 +3,8 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 
 class NotificationConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        user_id = self.scope["url_route"]["kwargs"]["user_id"]
-        self.room_group_name = user_id
+        # user_id = self.scope["url_route"]["kwargs"]["user_id"]
+        self.room_group_name = "general_notifications"
         
         await self.channel_layer.group_add(
             self.room_group_name,
@@ -25,10 +25,8 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             self.room_group_name,
             {"type": "notification", "notification": notification["message"]}
         )
-        # await self.send(text_data=json.dumps({"type": "notification", "notification": notification["message"]}))
        
     async def notification(self, event):
-        # message = event["message"]
         await self.send(text_data=json.dumps(event))
 
     async def disconnect(self, code):
