@@ -15,6 +15,7 @@ class Car(models.Model):
     power = models.CharField(max_length=1000)
     price = models.PositiveIntegerField()
     images = models.ManyToManyField(CarImage, blank= True)
+    damage_details = models.CharField(max_length=1000, blank= True, null= True)
     paid = models.BooleanField(default=False)
     sold = models.BooleanField(default=False)
     picked_up = models.BooleanField(default=False)
