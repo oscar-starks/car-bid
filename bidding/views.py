@@ -10,6 +10,7 @@ from seller_dashboard.models import BidOffer
 from bidding.models import Auction
 from django.shortcuts import get_object_or_404
 from bidding.permissions import IsDealer
+from seller_dashboard.serializers import BidOfferSerializer
 
 class AuctionView(APIView):
     serializer_class = CarSerializer
@@ -60,9 +61,26 @@ class BidOfferView(APIView):
         serializer = BidOfferSerializer(bid_offer)
         return Response(serializer.data)
 
-class MyBids(APIView):
+class MyBidsView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsDealer]
+    serializer_class = BidOfferSerializer
+    model = BidOffer
 
     def get(self, request):
-        pass
+        response = []
+        bids = self.model.objects.filter(dealer = request.user)
+        if bids.count() == 0:
+            return Response(response)
+
+        for bid in bids:
+            car = Car.objects.get(offers = bid)
+            car_serializer = CarSerializer(car, context = {"request": request})
+
+            bid_serializer = self.serializer_class(bid)
+            joined_details = {"bid":bid_serializer.data,"car":car_serializer.data}
+
+            response.append(joined_details)
+
+        return Response(response)
+
