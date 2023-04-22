@@ -1,6 +1,10 @@
 from rest_framework import serializers
-from bidding.serializers import BidOfferSerializer
-from seller_dashboard.models import Car, CarImage
+from seller_dashboard.models import Car, CarImage, BidOffer
+
+class BidOfferSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BidOffer
+        exclude = ['dealer']
 
 class CarImageSerializer(serializers.ModelSerializer):
     class Meta:

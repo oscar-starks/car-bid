@@ -1,4 +1,4 @@
 from django.contrib import admin
-from seller_dashboard.models import Car, CarImage
+from seller_dashboard.models import Car, CarImage,BidOffer
 
-admin.site.register([Car, CarImage])
+admin.site.register([Car, CarImage,BidOffer])

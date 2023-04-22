@@ -31,4 +31,8 @@ class Car(models.Model):
     def __str__(self):
         return self.model
     
+    # def save(self, *args, **kwargs) -> None:
+    #     car = Car.objects.get(id = self.id)
+    #     i
+    #     return super().save(*args, **kwargs)
    
