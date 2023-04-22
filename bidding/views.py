@@ -59,8 +59,5 @@ class BidOfferView(APIView):
         bid_offer = BidOffer.objects.create(dealer = request.user, offer = offer)
         car.offers.add(bid_offer)
 
-        asyncio.run(bid_message(bid_offer.offer, car.id))
-
-
         serializer = BidOfferSerializer(bid_offer)
         return Response(serializer.data)
