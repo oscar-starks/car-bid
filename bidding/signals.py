@@ -8,5 +8,5 @@ import asyncio
 def offer_signal(sender, instance, action, pk_set, **kwargs):
     if action == 'post_add':
         last_offer = instance.offers.last()
-        asyncio.run(bid_message(int(last_offer.offer), str(instance.id)))
+        asyncio.run(bid_message(int(last_offer.offer), str(instance.id), str(last_offer.id)))
 
