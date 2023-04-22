@@ -10,8 +10,6 @@ from seller_dashboard.models import BidOffer
 from bidding.models import Auction
 from django.shortcuts import get_object_or_404
 from bidding.permissions import IsDealer
-import asyncio
-from bidding.sending_notification import bid_message
 
 class AuctionView(APIView):
     serializer_class = CarSerializer
@@ -61,3 +59,10 @@ class BidOfferView(APIView):
 
         serializer = BidOfferSerializer(bid_offer)
         return Response(serializer.data)
+
+class MyBids(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsDealer]
+
+    def get(self, request):
+        pass
