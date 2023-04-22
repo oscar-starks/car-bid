@@ -1,8 +1,8 @@
-from django.urls import path, re_path
-from bidding.consumers import NotificationConsumer
+from django.urls import path
+from bidding.consumers import NotificationConsumer, CarOfferConsumer
 
 websocket_urlpatterns = [
-    path('general_notifications/', NotificationConsumer.as_asgi() )
-    # re_path(r'(?P<user_id>\w+)/$', NotificationConsumer.as_asgi())
+    path('general_notifications/', NotificationConsumer.as_asgi() ),
+    path('offers/<str:car_id>/', CarOfferConsumer.as_asgi())
 
 ]

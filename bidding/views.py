@@ -54,7 +54,8 @@ class BidOfferView(APIView):
         serializer.is_valid(raise_exception=True)
         offer = serializer.data["offer"]
         car = get_object_or_404(self.model, id = car_id)
-        bid_offer = BidOffer.objects.create(car = car, dealer = request.user, offer = offer)
+        bid_offer = BidOffer.objects.create(dealer = request.user, offer = offer)
+        car.offers.add(bid_offer)
 
         serializer = BidOfferSerializer(bid_offer)
         return Response(serializer.data)
