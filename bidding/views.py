@@ -84,3 +84,19 @@ class MyBidsView(APIView):
 
         return Response(response)
 
+class BidDetailView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsDealer]
+    serializer_class = BidOfferSerializer
+    model = BidOffer
+
+    def get(self, request, bid_id):
+        bid = get_object_or_404(self.model, dealer = request.user)
+
+        car = Car.objects.get(offers = bid)
+        car_serializer = CarSerializer(car, context = {"request": request})
+
+        bid_serializer = self.serializer_class(bid)
+        joined_details = {"bid":bid_serializer.data,"car":car_serializer.data}
+
+        return Response(joined_details)

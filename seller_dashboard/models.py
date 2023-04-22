@@ -3,6 +3,7 @@ from accounts.models import User
 import uuid
 
 class BidOffer(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     dealer = models.ForeignKey(User, on_delete=models.CASCADE)
     offer = models.PositiveIntegerField()
 
