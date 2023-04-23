@@ -1,5 +1,6 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
+from accounts.models import User
 
 class NotificationConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -34,8 +35,6 @@ class NotificationConsumer(AsyncWebsocketConsumer):
 
 class CarOfferConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        print("-----")
-        print(self.scope["user"])
         car_id = self.scope["url_route"]["kwargs"]["car_id"]
 
         self.room_group_name = car_id
@@ -65,3 +64,41 @@ class CarOfferConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, code):
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+
+
+class PersonalNotificationsConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        user = self.scope["user"]
+        user_id = self.scope["url_route"]["kwargs"]["user_id"]
+        self.room_group_name = user_id
+
+        try:
+            if str(user.id) == user_id:
+                await self.channel_layer.group_add(
+                    self.room_group_name,
+                    self.channel_name)
+
+                await self.accept()
+                
+                await self.send(text_data=json.dumps({
+                    'type':'connection established',
+                    'message':'connection successful'})
+                )
+        except:
+            pass
+        
+    async def receive(self, text_data):
+        text_data_json = json.loads(text_data)
+        offer = text_data_json
+        
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {"type": "offer", "offer": offer["offer"], "offer_id": offer["offer_id"]}
+        )
+       
+    async def offer(self, event):
+        await self.send(text_data=json.dumps(event))
+
+    async def disconnect(self, code):
+        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+
