@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'channels',
 
     'accounts.apps.AccountsConfig',
-    'car_app.apps.CarAppConfig',
     'seller_dashboard.apps.SellerDashboardConfig',
     'bidding.apps.BiddingConfig',
 ]

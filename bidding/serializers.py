@@ -15,4 +15,10 @@ class OfferSerializer(serializers.Serializer):
 class BidOfferSerializer(serializers.ModelSerializer):
     class Meta:
         model = BidOffer
-        exclude = ['dealer']
+        fields = '__all__'
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['dealer'] = instance.dealer.first_name
+
+        return representation

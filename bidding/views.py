@@ -7,7 +7,7 @@ from knox.auth import TokenAuthentication
 from bidding.serializers import AuctionSerializer, OfferSerializer, BidOfferSerializer
 from seller_dashboard.serializers import CarSerializer
 from seller_dashboard.models import BidOffer
-from bidding.models import Auction
+from bidding.models import Auction, BidNotification
 from django.shortcuts import get_object_or_404
 from bidding.permissions import IsDealer
 from seller_dashboard.serializers import BidOfferSerializer
@@ -57,6 +57,7 @@ class BidOfferView(APIView):
         car = get_object_or_404(self.model, id = car_id)
         bid_offer = BidOffer.objects.create(dealer = request.user, offer = offer)
         car.offers.add(bid_offer)
+        BidNotification.objects.create(user = car.owner, offer = bid_offer)
 
         serializer = BidOfferSerializer(bid_offer)
         return Response(serializer.data)
