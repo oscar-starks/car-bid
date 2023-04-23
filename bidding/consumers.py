@@ -36,7 +36,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
 class CarOfferConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         car_id = self.scope["url_route"]["kwargs"]["car_id"]
-
+        print(car_id)
         self.room_group_name = car_id
         
         await self.channel_layer.group_add(
@@ -53,6 +53,7 @@ class CarOfferConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         offer = text_data_json
+        print(offer)
         
         await self.channel_layer.group_send(
             self.room_group_name,
