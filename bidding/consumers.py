@@ -2,6 +2,8 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from accounts.models import User
 
+
+
 class NotificationConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.room_group_name = "general_notifications"
