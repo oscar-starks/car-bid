@@ -12,6 +12,7 @@ from django.shortcuts import get_object_or_404
 from bidding.permissions import IsDealer
 from seller_dashboard.serializers import BidOfferSerializer
 
+
 class AuctionView(APIView):
     serializer_class = CarSerializer
     model = Auction
