@@ -53,3 +53,4 @@ class AccountToken(models.Model):
     token = models.PositiveIntegerField(editable=False, default=generate_token, unique=True)
     creation_time = models.DateTimeField(auto_now_add=True)
     purpose = models.CharField(max_length=10, choices=ACCOUNT_TOKEN_CHOICES)
+
